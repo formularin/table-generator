@@ -1,1 +1,1 @@
-#table-generator
+# table-generator
