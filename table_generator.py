@@ -2,7 +2,8 @@
 
 
 import sys
-from os import path
+import os.path
+import lxml.etree as etree
 
 
 # html templates for inserting children
@@ -58,7 +59,7 @@ class Table:
             return html_table
 
 
-def main(filepath, complete_file, header):
+def main(filepath, complete_file, header, pretty):
     
     with open(filepath, 'r') as f:
         data = [row.split(',') for row in f.read().split('\n')]
@@ -71,7 +72,19 @@ def main(filepath, complete_file, header):
 
     table = Table(data)
 
-    print(table.generate_html(complete_file, header))
+    html = table.generate_html(complete_file, header)
+
+    if pretty:
+        
+        with open('quick.html', 'w+') as f:
+            f.write(html)
+        
+        x = etree.parse("quick.html")
+        print(etree.tostring(x, pretty_print=True).decode())
+
+    else:
+
+        print(html)
 
 
 if __name__ == "__main__":
@@ -85,8 +98,8 @@ if __name__ == "__main__":
         
         file = ''
         for arg in args:
-            if path.isfile(arg):
-                file = arg
+            if os.path.isfile(arg):
+                file = os.path.abspath(arg)
 
         if file == '':
             raise FileNotFoundError('either no file specified or file did not exist')
@@ -99,5 +112,11 @@ if __name__ == "__main__":
         if '-c' in args:
             complete_file = True
 
-        main(file, complete_file, header)
+        pretty = False
+        if '-p' in args:
+            pretty = True
+
+        print(pretty)
+
+        main(file, complete_file, header, pretty)
 
