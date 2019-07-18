@@ -4,3 +4,5 @@ venv
 test.sh
 __pycache__
 test.csv
+table.html
+test_table_generator.py

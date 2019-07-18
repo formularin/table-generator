@@ -2,6 +2,7 @@
 
 
 import sys
+from os import path
 
 
 # html templates for inserting children
@@ -60,7 +61,7 @@ class Table:
 def main(filepath, complete_file, header):
     
     with open(filepath, 'r') as f:
-        data = [row.split(',') for row in file.read().split('\n')]
+        data = [row.split(',') for row in f.read().split('\n')]
 
     if complete_file == 'True':
         complete_file = True
@@ -75,15 +76,28 @@ def main(filepath, complete_file, header):
 
 if __name__ == "__main__":
     
-    args = []
+    args = sys.argv[1:]
 
-    for i, arg in enumerate(sys.argv[1:]):
-        if arg == 'False':
-            args.append(False)
-        elif arg == 'True':
-            args.append(True)
-        else:
-            args.append(arg)
+    if '--help' in args:
+        print(__doc__)
 
-    print(args)
-    # main(*args)
+    else:
+        
+        file = ''
+        for arg in args:
+            if path.isfile(arg):
+                file = arg
+
+        if file == '':
+            raise FileNotFoundError('either no file specified or file did not exist')
+
+        header = False
+        if '-h' in args:
+            header = True
+
+        complete_file = False
+        if '-c' in args:
+            complete_file = True
+
+        main(file, complete_file, header)
+
