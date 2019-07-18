@@ -1,6 +1,6 @@
 """Converts csv to html table
 
-Usage: python[3] table_generator.py file.csv [-chp]
+Usage: ./table_generator.py file.csv [-chp]
 
 -c: adds html elements to write complete file, not just table, such as <!DOCTYPE html> and <html></html> tags
 
