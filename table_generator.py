@@ -7,6 +7,8 @@ Usage: ./table_generator.py file.csv [-chp]
 -h: turns first row into heaser tags
 
 -p: pretty prints html code
+
+-a: following arg is path to json file that contains html attirbutes and corresponding values
 """
 
 
