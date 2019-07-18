@@ -68,7 +68,7 @@ class Table:
             return html_table
 
 
-def main(filepath, complete_file, header, pretty):
+def main(filepath, complete_file, header, pretty, attrs):
     
     with open(filepath, 'r') as f:
         data = [row.split(',') for row in f.read().split('\n')]
@@ -82,6 +82,16 @@ def main(filepath, complete_file, header, pretty):
     table = Table(data)
 
     html = table.generate_html(complete_file, header)
+
+    if attrs:
+        
+        attrs_strings = []
+        for key, val in attrs.items():
+            attrs_strings.append(f'{key}="{val}"')
+
+        attrs_string = ' '.join(attrs_strings)
+
+        html = html.replace('<table>', f'<table {attrs_string}') 
 
     if pretty:
         
@@ -108,9 +118,8 @@ if __name__ == "__main__":
 
     correct_usage = True
     for arg in args:
-        if not os.path.isfile(arg) and \
-            arg not in ['-h', '--help', '-c', '-p']:
-            raise ValueError('Unknown option: %s. Call with --help option for usage' % arg)
+        if not os.path.isfile(arg) and arg not in ['-h', '--help', '-c', '-p', '-a']:
+            raise ValueError('Unknown option: "%s". Call with --help option for usage' % arg)
 
     if '--help' in args:
         print(__doc__)
@@ -119,11 +128,12 @@ if __name__ == "__main__":
         
         file = ''
         for arg in args:
-            if os.path.isfile(arg):
+            if os.path.isfile(arg) and '.csv' in arg:
                 file = os.path.abspath(arg)
 
         if file == '':
-            raise FileNotFoundError('either no file specified or file did not exist')
+            raise FileNotFoundError('Either no file specified or '
+                                    'file did not exist. Call with --help for usage')
 
         header = False
         if '-h' in args:
@@ -137,7 +147,11 @@ if __name__ == "__main__":
         if '-p' in args:
             pretty = True
 
-        print(pretty)
+        attrs = False
+        if '-a' in args:
+            json_file = args[args.index('-a') + 1]
+            with open(json_file, 'r') as f:
+                attrs = eval(f.read())
 
-        main(file, complete_file, header, pretty)
+        main(file, complete_file, header, pretty, attrs)
 
