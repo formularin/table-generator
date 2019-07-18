@@ -1,3 +1,6 @@
 .DS_Store
 venv
 .vscode
+test.sh
+__pycache__
+test.csv

@@ -1,3 +1,6 @@
+"""Converts csv to html table"""
+
+
 import sys
 
 
@@ -54,9 +57,33 @@ class Table:
             return html_table
 
 
-def main(filepath):
-    pass
+def main(filepath, complete_file, header):
+    
+    with open(filepath, 'r') as f:
+        data = [row.split(',') for row in file.read().split('\n')]
+
+    if complete_file == 'True':
+        complete_file = True
+
+    if header == 'True':
+        header = True
+
+    table = Table(data)
+
+    print(table.generate_html(complete_file, header))
+
 
 if __name__ == "__main__":
     
-    main(sys.argv[1:])
+    args = []
+
+    for i, arg in enumerate(sys.argv[1:]):
+        if arg == 'False':
+            args.append(False)
+        elif arg == 'True':
+            args.append(True)
+        else:
+            args.append(arg)
+
+    print(args)
+    # main(*args)
