@@ -1,4 +1,13 @@
-"""Converts csv to html table"""
+"""Converts csv to html table
+
+Usage: python[3] table_generator.py file.csv [-chp]
+
+-c: adds html elements to write complete file, not just table, such as <!DOCTYPE html> and <html></html> tags
+
+-h: turns first row into heaser tags
+
+-p: pretty prints html code
+"""
 
 
 import sys
@@ -76,6 +85,12 @@ def main(filepath, complete_file, header, pretty):
 
     if pretty:
         
+        i = 0
+        tmp = f'{i}.txt'
+        while os.path.isfile(tmp):
+            i += 1
+            tmp = f'{i}.txt'
+
         with open('quick.html', 'w+') as f:
             f.write(html)
         
@@ -90,6 +105,12 @@ def main(filepath, complete_file, header, pretty):
 if __name__ == "__main__":
     
     args = sys.argv[1:]
+
+    correct_usage = True
+    for arg in args:
+        if not os.path.isfile(arg) and \
+            arg not in ['-h', '--help', '-c', '-p']:
+            raise ValueError('Unknown option: %s. Call with --help option for usage' % arg)
 
     if '--help' in args:
         print(__doc__)
